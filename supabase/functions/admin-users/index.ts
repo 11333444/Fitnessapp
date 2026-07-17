@@ -17,7 +17,7 @@ const HABIT_TEMPLATE: HabitTemplateItem[] = [
   { name: "180g Protein", type: "numeric", target_value: 180, unit: "g", category: "Ernährung", sort_order: 3 },
   { name: "Bauernhof essen", type: "boolean", category: "Ernährung", sort_order: 4 },
   { name: "8.000 Schritte", type: "numeric", target_value: 8000, unit: "Schritte", category: "Fitness", sort_order: 5 },
-  { name: "In den Haaren fummeln", type: "boolean", category: "Gesundheit", sort_order: 6 },
+  { name: "In den Haaren fummeln", type: "boolean", category: "Ticks", sort_order: 6 },
   { name: "6h produktiv arbeiten / lernen", type: "numeric", target_value: 6, unit: "h", category: "Produktivität", sort_order: 7 },
   { name: "wirklicher Fortschritt ja / nein", type: "boolean", category: "Produktivität", sort_order: 8 },
   { name: "no limit thinking and journaling", type: "boolean", category: "Mindset", linked_field: "no_limit_journal", sort_order: 9 },
