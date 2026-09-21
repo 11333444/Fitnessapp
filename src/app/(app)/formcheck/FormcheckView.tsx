@@ -35,7 +35,7 @@ export function FormcheckView({
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-800" />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} domain={["auto", "auto"]} unit=" kg" />
+                <YAxis tick={{ fontSize: 12 }} domain={[75, 110]} unit=" kg" />
                 <Tooltip />
                 <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
