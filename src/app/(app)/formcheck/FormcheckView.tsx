@@ -19,6 +19,8 @@ export function FormcheckView({
     weight: w.weight,
   }));
 
+  const weightDomain = computeWeightDomain(chartData.map((d) => d.weight));
+
   return (
     <div className="space-y-8 pb-16">
       <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
@@ -35,7 +37,7 @@ export function FormcheckView({
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-800" />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} domain={[75, 110]} unit=" kg" />
+                <YAxis tick={{ fontSize: 12 }} domain={weightDomain} unit=" kg" />
                 <Tooltip />
                 <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
@@ -73,4 +75,25 @@ export function FormcheckView({
       </section>
     </div>
   );
+}
+
+/**
+ * Zieht die Y-Achse eng um die tatsächlichen Gewichtswerte (mit etwas Puffer),
+ * statt sie starr über den vollen 70-110kg-Bereich zu spannen - sonst wirken
+ * reale wöchentliche Schwankungen optisch wie eine flache Linie.
+ */
+function computeWeightDomain(values: number[]): [number, number] {
+  const MIN_BOUND = 70;
+  const MAX_BOUND = 110;
+  const PADDING = 1.5;
+
+  if (values.length === 0) return [MIN_BOUND, MAX_BOUND];
+
+  const dataMin = Math.min(...values);
+  const dataMax = Math.max(...values);
+
+  const lower = Math.max(MIN_BOUND, Math.floor((dataMin - PADDING) * 2) / 2);
+  const upper = Math.min(MAX_BOUND, Math.ceil((dataMax + PADDING) * 2) / 2);
+
+  return lower < upper ? [lower, upper] : [MIN_BOUND, MAX_BOUND];
 }
