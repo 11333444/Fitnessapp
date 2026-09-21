@@ -26,6 +26,7 @@ const HABIT_TEMPLATE: HabitTemplateItem[] = [
   { name: "Tagesreflektion", type: "boolean", category: "Mindset", linked_field: "note", sort_order: 12 },
   { name: "Liegestütze", type: "numeric", target_value: 50, unit: "Wiederholungen", category: "Fitness", sort_order: 13 },
   { name: "Dankbarkeit", type: "boolean", category: "Mindset", linked_field: "gratitude_journal", sort_order: 14 },
+  { name: "Magerquark / Chicken / Dattel-Reis / Buchweizen", type: "boolean", category: "Ernährung", sort_order: 15 },
 ];
 
 function json(data: unknown, status = 200) {

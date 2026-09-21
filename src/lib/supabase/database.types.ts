@@ -45,6 +45,74 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_logs: {
+        Row: {
+          created_at: string
+          date: string
+          exercise_id: string
+          id: string
+          reps: number
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          exercise_id: string
+          id?: string
+          reps: number
+          updated_at?: string
+          weight: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          exercise_id?: string
+          id?: string
+          reps?: number
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_logs_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exercises: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       form_checks: {
         Row: {
           created_at: string
