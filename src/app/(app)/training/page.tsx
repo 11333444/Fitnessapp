@@ -17,16 +17,19 @@ export default async function TrainingPage({
 
   const supabase = await createClient();
 
-  const [{ data: exercises }, { data: logsForDate }, { data: allLogs }] = await Promise.all([
-    supabase
-      .from("exercises")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("is_active", true)
-      .order("sort_order"),
-    supabase.from("exercise_logs").select("*").eq("date", date),
-    supabase.from("exercise_logs").select("*").order("date"),
-  ]);
+  const [{ data: exercises }, { data: logsForDate }, { data: allLogs }, { data: swimLogsForDate }, { data: allSwimLogs }] =
+    await Promise.all([
+      supabase
+        .from("exercises")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("is_active", true)
+        .order("sort_order"),
+      supabase.from("exercise_logs").select("*").eq("date", date),
+      supabase.from("exercise_logs").select("*").order("date"),
+      supabase.from("swim_logs").select("*").eq("user_id", userId).eq("date", date),
+      supabase.from("swim_logs").select("*").eq("user_id", userId).order("date"),
+    ]);
 
   const exerciseIds = (exercises ?? []).map((e) => e.id);
   const logsForDateFiltered = (logsForDate ?? []).filter((l) => exerciseIds.includes(l.exercise_id));
@@ -44,6 +47,8 @@ export default async function TrainingPage({
       exercises={exercises ?? []}
       logsForDate={logsForDateFiltered}
       allLogs={allLogsFiltered}
+      swimLogsForDate={swimLogsForDate ?? []}
+      allSwimLogs={allSwimLogs ?? []}
     />
   );
 }
