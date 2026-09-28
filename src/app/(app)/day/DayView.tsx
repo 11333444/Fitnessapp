@@ -13,7 +13,6 @@ type Habit = Tables<"habits">;
 type HabitLog = Tables<"habit_logs">;
 type DailyEntry = Tables<"daily_entries">;
 type Workout = Tables<"workouts">;
-type MealPhoto = Tables<"meal_photos"> & { url: string | null };
 
 const WORKOUT_TYPES: { value: string; label: string }[] = [
   { value: "rest", label: "Rest Day" },
@@ -21,13 +20,6 @@ const WORKOUT_TYPES: { value: string; label: string }[] = [
   { value: "running", label: "Laufen" },
   { value: "cycling", label: "Rennrad" },
   { value: "strength", label: "Krafttraining" },
-];
-
-const MEAL_LABELS: { value: string; label: string }[] = [
-  { value: "breakfast", label: "Frühstück" },
-  { value: "lunch", label: "Mittag" },
-  { value: "dinner", label: "Abend" },
-  { value: "snack", label: "Snack" },
 ];
 
 export function DayView({
@@ -38,7 +30,6 @@ export function DayView({
   logs,
   dailyEntry,
   workouts,
-  mealPhotos,
   isSunday,
   weekSundayDate,
   weekly,
@@ -50,7 +41,6 @@ export function DayView({
   logs: HabitLog[];
   dailyEntry: DailyEntry | null;
   workouts: Workout[];
-  mealPhotos: MealPhoto[];
   isSunday: boolean;
   weekSundayDate: string;
   weekly: { weight: number | null; formCheckUrls: string[] } | null;
@@ -116,25 +106,6 @@ export function DayView({
       await supabase.from("workouts").delete().eq("id", existing.id);
     } else {
       await supabase.from("workouts").insert({ user_id: userData.user.id, date, type });
-    }
-    setBusy(false);
-    router.refresh();
-  }
-
-  async function handleMealPhotoUpload(file: File, mealLabel: string | null) {
-    setBusy(true);
-    const { data: userData } = await supabase.auth.getUser();
-    if (!userData.user) return;
-
-    const path = `${userData.user.id}/${date}/${crypto.randomUUID()}-${file.name}`;
-    const { error: uploadError } = await supabase.storage.from("meal-photos").upload(path, file);
-    if (!uploadError) {
-      await supabase.from("meal_photos").insert({
-        user_id: userData.user.id,
-        date,
-        photo_path: path,
-        meal_label: mealLabel,
-      });
     }
     setBusy(false);
     router.refresh();
@@ -304,26 +275,6 @@ export function DayView({
         />
       </section>
 
-      <section className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Essens-Bilder
-        </h2>
-        <MealPhotoUploader onUpload={handleMealPhotoUpload} />
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          {mealPhotos.map((photo) =>
-            photo.url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={photo.id}
-                src={photo.url}
-                alt={photo.meal_label ?? "Essen"}
-                className="aspect-square w-full rounded-lg object-cover"
-              />
-            ) : null,
-          )}
-        </div>
-      </section>
-
       {isSunday && (
         <section className="space-y-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 p-4">
           <h2 className="text-sm font-semibold text-amber-800 dark:text-amber-300">
@@ -392,41 +343,6 @@ function JournalField({
         onBlur={onSave}
         rows={2}
         className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-50"
-      />
-    </div>
-  );
-}
-
-function MealPhotoUploader({
-  onUpload,
-}: {
-  onUpload: (file: File, mealLabel: string | null) => void;
-}) {
-  const [mealLabel, setMealLabel] = useState<string>("");
-
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      <select
-        value={mealLabel}
-        onChange={(e) => setMealLabel(e.target.value)}
-        className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1 text-sm"
-      >
-        <option value="">Kein Label</option>
-        {MEAL_LABELS.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
-        ))}
-      </select>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) onUpload(file, mealLabel || null);
-          e.target.value = "";
-        }}
-        className="text-sm"
       />
     </div>
   );

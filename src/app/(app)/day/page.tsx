@@ -17,36 +17,20 @@ export default async function DayPage({
 
   const supabase = await createClient();
 
-  const [{ data: habits }, { data: logs }, { data: dailyEntry }, { data: workouts }, { data: mealPhotos }] =
-    await Promise.all([
-      supabase
-        .from("habits")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("is_active", true)
-        .order("sort_order"),
-      supabase.from("habit_logs").select("*").eq("date", date),
-      supabase.from("daily_entries").select("*").eq("user_id", userId).eq("date", date).maybeSingle(),
-      supabase.from("workouts").select("*").eq("user_id", userId).eq("date", date),
-      supabase
-        .from("meal_photos")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("date", date)
-        .order("created_at"),
-    ]);
+  const [{ data: habits }, { data: logs }, { data: dailyEntry }, { data: workouts }] = await Promise.all([
+    supabase
+      .from("habits")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("is_active", true)
+      .order("sort_order"),
+    supabase.from("habit_logs").select("*").eq("date", date),
+    supabase.from("daily_entries").select("*").eq("user_id", userId).eq("date", date).maybeSingle(),
+    supabase.from("workouts").select("*").eq("user_id", userId).eq("date", date),
+  ]);
 
   const habitIds = (habits ?? []).map((h) => h.id);
   const logsForUser = (logs ?? []).filter((l) => habitIds.includes(l.habit_id));
-
-  const mealPhotosWithUrls = await Promise.all(
-    (mealPhotos ?? []).map(async (photo) => {
-      const { data } = await supabase.storage
-        .from("meal-photos")
-        .createSignedUrl(photo.photo_path, 3600);
-      return { ...photo, url: data?.signedUrl ?? null };
-    }),
-  );
 
   let weekly: { weight: number | null; formCheckUrls: string[] } | null = null;
   if (isSundayDate(date)) {
@@ -88,7 +72,6 @@ export default async function DayPage({
       logs={logsForUser}
       dailyEntry={dailyEntry ?? null}
       workouts={workouts ?? []}
-      mealPhotos={mealPhotosWithUrls}
       isSunday={isSundayDate(date)}
       weekSundayDate={toDateOnly(weekSunday(current))}
       weekly={weekly}
