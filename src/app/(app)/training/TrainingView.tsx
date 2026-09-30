@@ -38,16 +38,28 @@ export function TrainingView({
   const isoDay = isoWeekday(dateObj);
   const [busy, setBusy] = useState(false);
 
-  async function saveLog(exerciseId: string, weight: string, reps: string) {
-    const weightNum = Number(weight.replace(",", "."));
+  async function saveLog(
+    exerciseId: string,
+    isBodyweight: boolean,
+    weight: string,
+    reps: string,
+    sets: string,
+  ) {
     const repsNum = Number(reps);
-    if (Number.isNaN(weightNum) || Number.isNaN(repsNum) || weight === "" || reps === "") return;
+    const setsNum = Number(sets);
+    if (Number.isNaN(repsNum) || reps === "" || Number.isNaN(setsNum) || sets === "") return;
+
+    let weightNum: number | null = null;
+    if (!isBodyweight) {
+      weightNum = Number(weight.replace(",", "."));
+      if (Number.isNaN(weightNum) || weight === "") return;
+    }
 
     setBusy(true);
     await supabase
       .from("exercise_logs")
       .upsert(
-        { exercise_id: exerciseId, date, weight: weightNum, reps: repsNum },
+        { exercise_id: exerciseId, date, weight: weightNum, reps: repsNum, sets: setsNum },
         { onConflict: "exercise_id,date" },
       );
     setBusy(false);
@@ -287,15 +299,18 @@ export function TrainingView({
         </form>
 
         <div className="space-y-4">
-          {exercises.map((exercise) => {
+          {exercises.map((exercise, index) => {
             const log = logsForDate.find((l) => l.exercise_id === exercise.id);
-            const history = allLogs
+            const historyForExercise = allLogs
               .filter((l) => l.exercise_id === exercise.id)
-              .map((l) => ({
-                date: formatDisplayDate(parseDateOnly(l.date)),
-                weight: l.weight,
-                reps: l.reps,
-              }));
+              .sort((a, b) => a.date.localeCompare(b.date));
+            const history = historyForExercise.map((l) => ({
+              date: formatDisplayDate(parseDateOnly(l.date)),
+              weight: l.weight,
+              reps: l.reps,
+              sets: l.sets,
+            }));
+            const lastThree = [...historyForExercise].reverse().slice(0, 3);
 
             return (
               <div
@@ -303,11 +318,16 @@ export function TrainingView({
                 className="space-y-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <input
-                    defaultValue={exercise.name}
-                    onBlur={(e) => e.target.value !== exercise.name && renameExercise(exercise.id, e.target.value)}
-                    className="flex-1 rounded-md border border-transparent bg-transparent px-1 py-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-50 hover:border-zinc-300 dark:hover:border-zinc-700"
-                  />
+                  <div className="flex flex-1 items-center gap-2">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900 text-xs font-semibold text-zinc-500">
+                      {index + 1}
+                    </span>
+                    <input
+                      defaultValue={exercise.name}
+                      onBlur={(e) => e.target.value !== exercise.name && renameExercise(exercise.id, e.target.value)}
+                      className="flex-1 rounded-md border border-transparent bg-transparent px-1 py-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-50 hover:border-zinc-300 dark:hover:border-zinc-700"
+                    />
+                  </div>
                   <button
                     onClick={() => archiveExercise(exercise.id)}
                     className="whitespace-nowrap rounded-md px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900"
@@ -317,10 +337,24 @@ export function TrainingView({
                 </div>
 
                 <ExerciseLogInputs
+                  isBodyweight={exercise.is_bodyweight}
                   defaultWeight={log?.weight?.toString() ?? ""}
                   defaultReps={log?.reps?.toString() ?? ""}
-                  onSave={(weight, reps) => saveLog(exercise.id, weight, reps)}
+                  defaultSets={log?.sets?.toString() ?? ""}
+                  onSave={(weight, reps, sets) => saveLog(exercise.id, exercise.is_bodyweight, weight, reps, sets)}
                 />
+
+                {lastThree.length > 0 && (
+                  <div className="space-y-1 text-xs text-zinc-500">
+                    {lastThree.map((l) => (
+                      <div key={l.id}>
+                        {formatDisplayDate(parseDateOnly(l.date))}:{" "}
+                        {!exercise.is_bodyweight && l.weight != null && <>{l.weight} kg · </>}
+                        {l.reps} Wdh. × {l.sets ?? "?"} Sätze
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {history.length > 0 ? (
                   <div className="h-40 w-full">
@@ -328,9 +362,19 @@ export function TrainingView({
                       <LineChart data={history}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-800" />
                         <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                        <YAxis tick={{ fontSize: 10 }} domain={["auto", "auto"]} unit=" kg" />
-                        <Tooltip formatter={(value, name) => (name === "weight" ? `${value} kg` : value)} />
-                        <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
+                        <YAxis
+                          tick={{ fontSize: 10 }}
+                          domain={["auto", "auto"]}
+                          unit={exercise.is_bodyweight ? " Wdh." : " kg"}
+                        />
+                        <Tooltip content={<ExerciseTooltip isBodyweight={exercise.is_bodyweight} />} />
+                        <Line
+                          type="monotone"
+                          dataKey={exercise.is_bodyweight ? "reps" : "weight"}
+                          stroke="#10b981"
+                          strokeWidth={2}
+                          dot={{ r: 3 }}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -347,36 +391,79 @@ export function TrainingView({
 }
 
 function ExerciseLogInputs({
+  isBodyweight,
   defaultWeight,
   defaultReps,
+  defaultSets,
   onSave,
 }: {
+  isBodyweight: boolean;
   defaultWeight: string;
   defaultReps: string;
-  onSave: (weight: string, reps: string) => void;
+  defaultSets: string;
+  onSave: (weight: string, reps: string, sets: string) => void;
 }) {
   const [weight, setWeight] = useState(defaultWeight);
   const [reps, setReps] = useState(defaultReps);
+  const [sets, setSets] = useState(defaultSets);
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <label className="text-zinc-500">Gewicht (kg)</label>
-      <input
-        type="number"
-        step="0.5"
-        value={weight}
-        onChange={(e) => setWeight(e.target.value)}
-        onBlur={() => onSave(weight, reps)}
-        className="w-20 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
-      />
+    <div className="flex flex-wrap items-center gap-2 text-sm">
+      {!isBodyweight && (
+        <>
+          <label className="text-zinc-500">Gewicht (kg)</label>
+          <input
+            type="number"
+            step="0.5"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            onBlur={() => onSave(weight, reps, sets)}
+            className="w-20 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
+          />
+        </>
+      )}
       <label className="text-zinc-500">Wiederholungen</label>
       <input
         type="number"
         value={reps}
         onChange={(e) => setReps(e.target.value)}
-        onBlur={() => onSave(weight, reps)}
+        onBlur={() => onSave(weight, reps, sets)}
         className="w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
       />
+      <label className="text-zinc-500">Sätze</label>
+      <input
+        type="number"
+        value={sets}
+        onChange={(e) => setSets(e.target.value)}
+        onBlur={() => onSave(weight, reps, sets)}
+        className="w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
+      />
+    </div>
+  );
+}
+
+function ExerciseTooltip({
+  active,
+  payload,
+  label,
+  isBodyweight,
+}: {
+  active?: boolean;
+  payload?: { payload: { weight: number | null; reps: number; sets: number | null } }[];
+  label?: string;
+  isBodyweight: boolean;
+}) {
+  if (!active || !payload?.length) return null;
+  const data = payload[0].payload;
+
+  return (
+    <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 py-1.5 text-xs shadow-sm">
+      <div className="font-medium text-zinc-900 dark:text-zinc-50">{label}</div>
+      {!isBodyweight && data.weight != null && (
+        <div className="text-emerald-600 dark:text-emerald-400">Gewicht: {data.weight} kg</div>
+      )}
+      <div className="text-emerald-600 dark:text-emerald-400">Wiederholungen: {data.reps}</div>
+      <div className="text-zinc-500">Sätze: {data.sets ?? "–"}</div>
     </div>
   );
 }

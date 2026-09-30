@@ -52,8 +52,9 @@ export type Database = {
           exercise_id: string
           id: string
           reps: number
+          sets: number | null
           updated_at: string
-          weight: number
+          weight: number | null
         }
         Insert: {
           created_at?: string
@@ -61,8 +62,9 @@ export type Database = {
           exercise_id: string
           id?: string
           reps: number
+          sets?: number | null
           updated_at?: string
-          weight: number
+          weight?: number | null
         }
         Update: {
           created_at?: string
@@ -70,8 +72,9 @@ export type Database = {
           exercise_id?: string
           id?: string
           reps?: number
+          sets?: number | null
           updated_at?: string
-          weight?: number
+          weight?: number | null
         }
         Relationships: [
           {
@@ -88,6 +91,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean
+          is_bodyweight: boolean
           name: string
           sort_order: number
           updated_at: string
@@ -97,6 +101,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          is_bodyweight?: boolean
           name: string
           sort_order?: number
           updated_at?: string
@@ -106,6 +111,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          is_bodyweight?: boolean
           name?: string
           sort_order?: number
           updated_at?: string
