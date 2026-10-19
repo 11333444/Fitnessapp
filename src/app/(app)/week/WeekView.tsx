@@ -131,6 +131,11 @@ export function WeekView({
                 return habitLogs.some((l) => l.date === dateStr && l.completed);
               }).length;
               const pct = applicableDays.length ? Math.round((completedDays / applicableDays.length) * 100) : 0;
+              const weekSum = habit.type === "numeric"
+                ? habitLogs
+                    .filter((l) => weekDates.includes(l.date) && l.logged_value != null)
+                    .reduce((sum, l) => sum + Number(l.logged_value), 0)
+                : null;
 
               return (
                 <tr key={habit.id} className="border-b border-zinc-100 dark:border-zinc-900">
@@ -159,7 +164,15 @@ export function WeekView({
                       </td>
                     );
                   })}
-                  <td className="px-2 py-2 text-center text-xs text-zinc-500">{pct}%</td>
+                  <td className="px-2 py-2 text-center text-xs text-zinc-500">
+                    {weekSum !== null ? (
+                      <span>
+                        Σ {weekSum % 1 === 0 ? weekSum : weekSum.toFixed(1)} {habit.unit}
+                      </span>
+                    ) : (
+                      `${pct}%`
+                    )}
+                  </td>
                 </tr>
               );
             })}

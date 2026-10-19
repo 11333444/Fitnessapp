@@ -69,6 +69,18 @@ export function DayView({
     router.refresh();
   }
 
+  async function saveLoggedValue(habit: Habit, value: string) {
+    const numeric = value.trim() === "" ? null : Number(value.replace(",", "."));
+    if (numeric !== null && Number.isNaN(numeric)) return;
+
+    setBusy(true);
+    await supabase
+      .from("habit_logs")
+      .upsert({ habit_id: habit.id, date, logged_value: numeric }, { onConflict: "habit_id,date" });
+    setBusy(false);
+    router.refresh();
+  }
+
   async function saveJournalField(
     field: "note" | "no_limit_journal" | "gratitude_journal",
     value: string,
@@ -199,11 +211,11 @@ export function DayView({
                 const completed = log?.completed ?? false;
                 const streak = currentStreak(habit.id, logs, dateObj);
                 return (
-                  <label
+                  <div
                     key={habit.id}
                     className="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2.5"
                   >
-                    <div className="flex items-center gap-3">
+                    <label className="flex flex-1 items-center gap-3">
                       <input
                         type="checkbox"
                         checked={completed}
@@ -221,13 +233,20 @@ export function DayView({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </label>
+                    {habit.type === "numeric" && (
+                      <NumericLogInput
+                        defaultValue={log?.logged_value?.toString() ?? ""}
+                        unit={habit.unit}
+                        onSave={(value) => saveLoggedValue(habit, value)}
+                      />
+                    )}
                     {streak > 1 && (
                       <span className="whitespace-nowrap rounded-full bg-orange-100 dark:bg-orange-900/40 px-2 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-300">
                         🔥 {streak}
                       </span>
                     )}
-                  </label>
+                  </div>
                 );
               })}
             </div>
@@ -321,6 +340,32 @@ function groupByCategory(habits: Habit[]): Record<string, Habit[]> {
     groups[key].push(habit);
   }
   return groups;
+}
+
+function NumericLogInput({
+  defaultValue,
+  unit,
+  onSave,
+}: {
+  defaultValue: string;
+  unit: string | null;
+  onSave: (value: string) => void;
+}) {
+  const [value, setValue] = useState(defaultValue);
+
+  return (
+    <div className="flex items-center gap-1">
+      <input
+        type="number"
+        step="any"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={() => onSave(value)}
+        className="w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1 text-sm"
+      />
+      {unit && <span className="text-xs text-zinc-500">{unit}</span>}
+    </div>
+  );
 }
 
 function JournalField({
