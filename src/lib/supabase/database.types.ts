@@ -92,6 +92,7 @@ export type Database = {
           id: string
           is_active: boolean
           is_bodyweight: boolean
+          muscle_group: string | null
           name: string
           sort_order: number
           updated_at: string
@@ -102,6 +103,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_bodyweight?: boolean
+          muscle_group?: string | null
           name: string
           sort_order?: number
           updated_at?: string
@@ -112,6 +114,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_bodyweight?: boolean
+          muscle_group?: string | null
           name?: string
           sort_order?: number
           updated_at?: string
@@ -186,6 +189,7 @@ export type Database = {
           active_weekdays: number[]
           category: string | null
           created_at: string
+          direction: string
           id: string
           is_active: boolean
           linked_field: string | null
@@ -201,6 +205,7 @@ export type Database = {
           active_weekdays?: number[]
           category?: string | null
           created_at?: string
+          direction?: string
           id?: string
           is_active?: boolean
           linked_field?: string | null
@@ -216,6 +221,7 @@ export type Database = {
           active_weekdays?: number[]
           category?: string | null
           created_at?: string
+          direction?: string
           id?: string
           is_active?: boolean
           linked_field?: string | null
@@ -314,6 +320,7 @@ export type Database = {
           id: string
           type: string
           user_id: string
+          variant: string | null
         }
         Insert: {
           created_at?: string
@@ -321,6 +328,7 @@ export type Database = {
           id?: string
           type: string
           user_id: string
+          variant?: string | null
         }
         Update: {
           created_at?: string
@@ -328,6 +336,7 @@ export type Database = {
           id?: string
           type?: string
           user_id?: string
+          variant?: string | null
         }
         Relationships: []
       }

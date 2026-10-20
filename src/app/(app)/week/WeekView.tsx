@@ -166,7 +166,7 @@ export function WeekView({
                         <input
                           type="checkbox"
                           checked={completed}
-                          disabled={busy || habit.type === "time"}
+                          disabled={busy || habit.type !== "boolean"}
                           onChange={(e) => toggleHabit(habit, dateStr, e.target.checked)}
                           className="h-4 w-4 rounded accent-emerald-500 disabled:opacity-100"
                         />

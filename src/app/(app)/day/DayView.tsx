@@ -74,10 +74,19 @@ export function DayView({
     const numeric = value.trim() === "" ? null : Number(value.replace(",", "."));
     if (numeric !== null && Number.isNaN(numeric)) return;
 
+    let completed = false;
+    if (numeric !== null && habit.target_value != null) {
+      completed =
+        habit.direction === "at_most" ? numeric <= habit.target_value : numeric >= habit.target_value;
+    }
+
     setBusy(true);
     await supabase
       .from("habit_logs")
-      .upsert({ habit_id: habit.id, date, logged_value: numeric }, { onConflict: "habit_id,date" });
+      .upsert(
+        { habit_id: habit.id, date, logged_value: numeric, completed },
+        { onConflict: "habit_id,date" },
+      );
     setBusy(false);
     router.refresh();
   }
@@ -248,7 +257,7 @@ export function DayView({
                       <input
                         type="checkbox"
                         checked={completed}
-                        disabled={busy || habit.type === "time"}
+                        disabled={busy || habit.type !== "boolean"}
                         onChange={(e) => toggleHabit(habit, e.target.checked)}
                         className="h-5 w-5 rounded accent-emerald-500 disabled:opacity-100"
                       />
@@ -256,9 +265,9 @@ export function DayView({
                         <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
                           {habit.name}
                         </div>
-                        {habit.type === "numeric" && habit.target_value && (
+                        {habit.type === "numeric" && habit.target_value != null && (
                           <div className="text-xs text-zinc-500">
-                            Ziel: {habit.target_value} {habit.unit}
+                            Ziel: {habit.direction === "at_most" ? "≤" : "≥"} {habit.target_value} {habit.unit}
                           </div>
                         )}
                         {habit.type === "time" && habit.target_value != null && (

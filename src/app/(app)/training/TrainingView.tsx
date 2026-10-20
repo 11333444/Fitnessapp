@@ -13,6 +13,12 @@ type Exercise = Tables<"exercises">;
 type ExerciseLog = Tables<"exercise_logs">;
 type SwimLog = Tables<"swim_logs">;
 
+const VARIANTS: { value: string; label: string; exclude: string[] }[] = [
+  { value: "normal", label: "Normal", exclude: ["bauch", "beine"] },
+  { value: "no_shoulder_legs", label: "Ohne Schulter + Beine", exclude: ["schulter", "bauch"] },
+  { value: "no_back_abs", label: "Ohne Rücken + Bauch", exclude: ["ruecken", "beine"] },
+];
+
 export function TrainingView({
   date,
   prevDate,
@@ -22,6 +28,8 @@ export function TrainingView({
   allLogs,
   swimLogsForDate,
   allSwimLogs,
+  variant,
+  strengthWorkoutId,
 }: {
   date: string;
   prevDate: string;
@@ -31,12 +39,35 @@ export function TrainingView({
   allLogs: ExerciseLog[];
   swimLogsForDate: SwimLog[];
   allSwimLogs: SwimLog[];
+  variant: string;
+  strengthWorkoutId: string | null;
 }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const dateObj = useMemo(() => parseDateOnly(date), [date]);
   const isoDay = isoWeekday(dateObj);
   const [busy, setBusy] = useState(false);
+
+  const activeVariant = VARIANTS.find((v) => v.value === variant) ?? VARIANTS[0];
+  const visibleExercises = exercises.filter(
+    (e) => !e.muscle_group || !activeVariant.exclude.includes(e.muscle_group),
+  );
+
+  async function saveVariant(newVariant: string) {
+    setBusy(true);
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return;
+
+    if (strengthWorkoutId) {
+      await supabase.from("workouts").update({ variant: newVariant }).eq("id", strengthWorkoutId);
+    } else {
+      await supabase
+        .from("workouts")
+        .insert({ user_id: userData.user.id, date, type: "strength", variant: newVariant });
+    }
+    setBusy(false);
+    router.refresh();
+  }
 
   async function saveLog(
     exerciseId: string,
@@ -279,6 +310,24 @@ export function TrainingView({
           </div>
         </div>
 
+        <div className="flex flex-wrap gap-2">
+          {VARIANTS.map((v) => (
+            <button
+              key={v.value}
+              type="button"
+              disabled={busy}
+              onClick={() => saveVariant(v.value)}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium disabled:opacity-50 ${
+                activeVariant.value === v.value
+                  ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                  : "border border-zinc-300 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400"
+              }`}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
+
         <form
           action={(fd) => addExercise(fd)}
           className="flex gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
@@ -299,7 +348,7 @@ export function TrainingView({
         </form>
 
         <div className="space-y-4">
-          {exercises.map((exercise, index) => {
+          {visibleExercises.map((exercise, index) => {
             const log = logsForDate.find((l) => l.exercise_id === exercise.id);
             const historyForExercise = allLogs
               .filter((l) => l.exercise_id === exercise.id)
