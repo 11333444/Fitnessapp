@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Tables, TablesInsert } from "@/lib/supabase/database.types";
 import { dayProgress, currentStreak } from "@/lib/progress";
 import { parseDateOnly, weekdayLabelDE, isoWeekday, formatDisplayDate } from "@/lib/dates";
+import { minutesToTimeString, timeStringToMinutes } from "@/lib/time";
 import { ProgressBar } from "@/components/ProgressBar";
 
 type Habit = Tables<"habits">;
@@ -77,6 +78,34 @@ export function DayView({
     await supabase
       .from("habit_logs")
       .upsert({ habit_id: habit.id, date, logged_value: numeric }, { onConflict: "habit_id,date" });
+    setBusy(false);
+    router.refresh();
+  }
+
+  async function saveTimeValue(habit: Habit, time: string) {
+    if (time.trim() === "") {
+      setBusy(true);
+      await supabase
+        .from("habit_logs")
+        .upsert(
+          { habit_id: habit.id, date, logged_value: null, completed: false },
+          { onConflict: "habit_id,date" },
+        );
+      setBusy(false);
+      router.refresh();
+      return;
+    }
+
+    const minutes = timeStringToMinutes(time);
+    if (minutes === null) return;
+
+    const completed = habit.target_value != null ? minutes <= habit.target_value : false;
+
+    setBusy(true);
+    await supabase.from("habit_logs").upsert(
+      { habit_id: habit.id, date, logged_value: minutes, completed },
+      { onConflict: "habit_id,date" },
+    );
     setBusy(false);
     router.refresh();
   }
@@ -219,9 +248,9 @@ export function DayView({
                       <input
                         type="checkbox"
                         checked={completed}
-                        disabled={busy}
+                        disabled={busy || habit.type === "time"}
                         onChange={(e) => toggleHabit(habit, e.target.checked)}
-                        className="h-5 w-5 rounded accent-emerald-500"
+                        className="h-5 w-5 rounded accent-emerald-500 disabled:opacity-100"
                       />
                       <div>
                         <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
@@ -232,6 +261,11 @@ export function DayView({
                             Ziel: {habit.target_value} {habit.unit}
                           </div>
                         )}
+                        {habit.type === "time" && habit.target_value != null && (
+                          <div className="text-xs text-zinc-500">
+                            Ziel: {minutesToTimeString(habit.target_value)} Uhr
+                          </div>
+                        )}
                       </div>
                     </label>
                     {habit.type === "numeric" && (
@@ -239,6 +273,12 @@ export function DayView({
                         defaultValue={log?.logged_value?.toString() ?? ""}
                         unit={habit.unit}
                         onSave={(value) => saveLoggedValue(habit, value)}
+                      />
+                    )}
+                    {habit.type === "time" && (
+                      <TimeLogInput
+                        defaultValue={log?.logged_value != null ? minutesToTimeString(log.logged_value) : ""}
+                        onSave={(value) => saveTimeValue(habit, value)}
                       />
                     )}
                     {streak > 1 && (
@@ -365,6 +405,28 @@ function NumericLogInput({
       />
       {unit && <span className="text-xs text-zinc-500">{unit}</span>}
     </div>
+  );
+}
+
+function TimeLogInput({
+  defaultValue,
+  onSave,
+}: {
+  defaultValue: string;
+  onSave: (value: string) => void;
+}) {
+  const [value, setValue] = useState(defaultValue);
+
+  return (
+    <input
+      type="time"
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value);
+        onSave(e.target.value);
+      }}
+      className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1 text-sm"
+    />
   );
 }
 

@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Tables } from "@/lib/supabase/database.types";
 import { periodProgress, habitAppliesOnDate } from "@/lib/progress";
 import { parseDateOnly, weekdayLabelDE, isoWeekday, formatDisplayDate } from "@/lib/dates";
+import { minutesToTimeString } from "@/lib/time";
 import { ProgressBar } from "@/components/ProgressBar";
 
 type Habit = Tables<"habits">;
@@ -136,6 +137,14 @@ export function WeekView({
                     .filter((l) => weekDates.includes(l.date) && l.logged_value != null)
                     .reduce((sum, l) => sum + Number(l.logged_value), 0)
                 : null;
+              const weekTimeValues = habit.type === "time"
+                ? habitLogs
+                    .filter((l) => weekDates.includes(l.date) && l.logged_value != null)
+                    .map((l) => Number(l.logged_value))
+                : null;
+              const weekTimeAverage = weekTimeValues && weekTimeValues.length
+                ? weekTimeValues.reduce((sum, v) => sum + v, 0) / weekTimeValues.length
+                : null;
 
               return (
                 <tr key={habit.id} className="border-b border-zinc-100 dark:border-zinc-900">
@@ -157,15 +166,17 @@ export function WeekView({
                         <input
                           type="checkbox"
                           checked={completed}
-                          disabled={busy}
+                          disabled={busy || habit.type === "time"}
                           onChange={(e) => toggleHabit(habit, dateStr, e.target.checked)}
-                          className="h-4 w-4 rounded accent-emerald-500"
+                          className="h-4 w-4 rounded accent-emerald-500 disabled:opacity-100"
                         />
                       </td>
                     );
                   })}
                   <td className="px-2 py-2 text-center text-xs text-zinc-500">
-                    {weekSum !== null ? (
+                    {weekTimeAverage !== null ? (
+                      <span>Ø {minutesToTimeString(weekTimeAverage)}</span>
+                    ) : weekSum !== null ? (
                       <span>
                         Σ {weekSum % 1 === 0 ? weekSum : weekSum.toFixed(1)} {habit.unit}
                       </span>
