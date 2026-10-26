@@ -21,6 +21,7 @@ const WORKOUT_TYPES: { value: string; label: string }[] = [
   { value: "running", label: "Laufen" },
   { value: "cycling", label: "Rennrad" },
   { value: "strength", label: "Krafttraining" },
+  { value: "tennis", label: "Tennis" },
 ];
 
 export function DayView({
