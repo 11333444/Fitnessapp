@@ -1,7 +1,7 @@
 export const NUTRITION_PLAN = {
   title: "Lean Bulk · 9. Nov 2026 – 30. Apr 2027 · 88 kg auf 91 kg",
   goal: "2 große Mahlzeiten + 1 Kohlenhydrat-Snack · jede Woche gleich",
-  macros: { kcal: 2800, protein: 170, carbs: 380, fat: 70 },
+  macros: { kcal: 2900, protein: 170, carbs: 400, fat: 70 },
   dailyStructure: [
     {
       key: "mittag",
@@ -15,7 +15,7 @@ export const NUTRITION_PLAN = {
       label: "Gym-Snack",
       time: "30–60 min vor dem Training",
       kcal: 380,
-      desc: "1 Banane, 5 Datteln, 1 EL Honig, 4 Reiswaffeln (ca. 90 g Kohlenhydrate). An Ruhetagen: nachmittags als Snack.",
+      desc: "1 Banane, 5 Datteln, 1 EL Honig, 4 Reiswaffeln (ca. 90 g Kohlenhydrate). Nur an Trainings-, Schwimm- und Sauna-Tagen (Mo, Di, Do, Sa, So). An reinen Ruhetagen (Mi, Fr) entfällt der Snack.",
     },
     {
       key: "abend",
@@ -55,42 +55,49 @@ export const NUTRITION_PLAN = {
       activity: "Sauna",
       mittag: "Crispy Tonno Feta Rice Bowl",
       abend: "Bolognese",
+      snack: true,
     },
     {
       day: "Di",
       activity: "Kraft A",
       mittag: "Korean BBQ Chicken mit Reis",
       abend: "Ofengemüse-Sauce mit Rinderbällchen & Reis",
+      snack: true,
     },
     {
       day: "Mi",
       activity: "Ruhetag",
       mittag: "Rührei-Kartoffel-Pfanne mit Feta & Tomaten",
       abend: "Protein-Wraps mit Veggie-Hack & Röstzwiebeln",
+      snack: false,
     },
     {
       day: "Do",
       activity: "Kraft B",
       mittag: "Seitan-Soja-Reis-Bowl",
       abend: "Kabeljau oder Naturlachs mit Kartoffeln & Kaisergemüse",
+      snack: true,
     },
     {
       day: "Fr",
       activity: "Ruhetag",
       mittag: "Zucchinischiffe mit Veggie-Hack & Käse + Buchweizen",
       abend: "Flammkuchen auf Protein-Wrap + Fetasalat",
+      snack: false,
     },
     {
       day: "Sa",
       activity: "Kraft C",
       mittag: "Bolognese",
       abend: "Korean BBQ Chicken mit Reis",
+      snack: true,
     },
     {
       day: "So",
       activity: "Schwimmen",
       mittag: "Thunfisch-Reis mit Kaisergemüse",
       abend: "McDonald's (Menü + Cola Zero)",
+      snack: true,
     },
   ],
   recipes: [

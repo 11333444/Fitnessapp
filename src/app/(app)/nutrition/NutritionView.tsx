@@ -112,6 +112,7 @@ export function NutritionView({
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Tag</th>
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Aktivität</th>
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Mittagessen</th>
+                <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Gym-Snack</th>
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Abendessen</th>
               </tr>
             </thead>
@@ -121,14 +122,17 @@ export function NutritionView({
                   <td className="px-2 py-1.5 font-medium text-zinc-900 dark:text-zinc-50">{d.day}</td>
                   <td className="px-2 py-1.5 text-zinc-500">{d.activity}</td>
                   <td className="px-2 py-1.5 text-zinc-700 dark:text-zinc-300">{d.mittag}</td>
+                  <td className="px-2 py-1.5 text-zinc-500">
+                    {d.snack ? "Banane, 5 Datteln, Honig, 4 Reiswaffeln" : "–"}
+                  </td>
                   <td className="px-2 py-1.5 text-zinc-700 dark:text-zinc-300">{d.abend}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <p className="px-2 py-1.5 text-xs text-zinc-500">
-            Gym-Snack (Banane, 5 Datteln, 1 EL Honig, 4 Reiswaffeln) an jedem Tag, 30–60 min vor dem Training bzw.
-            als Nachmittagssnack an Ruhetagen.
+            Gym-Snack 30–60 min vor dem Training/Schwimmen bzw. vor der Sauna. An reinen Ruhetagen (Mi, Fr) entfällt
+            er.
           </p>
         </div>
       </section>
