@@ -1,11 +1,30 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  ComposedChart,
+  Line,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import type { Tables } from "@/lib/supabase/database.types";
 import { formatDisplayDate, parseDateOnly } from "@/lib/dates";
+import { LEAN_BULK_WEIGHT_PLAN, WEIGHT_CORRIDOR } from "@/lib/leanBulkWeightPlan";
 
 type WeightEntry = Tables<"weight_entries">;
 type FormCheck = Tables<"form_checks"> & { urls: string[] };
+
+type ChartPoint = {
+  date: string;
+  sortKey: string;
+  weight: number | null;
+  target: number | null;
+  corridor: [number, number] | null;
+};
 
 export function FormcheckView({
   weightEntries,
@@ -14,31 +33,99 @@ export function FormcheckView({
   weightEntries: WeightEntry[];
   formChecks: FormCheck[];
 }) {
-  const chartData = weightEntries.map((w) => ({
-    date: formatDisplayDate(parseDateOnly(w.week_start_date)),
-    weight: w.weight,
-  }));
+  const byDate = new Map<string, ChartPoint>();
+
+  for (const plan of LEAN_BULK_WEIGHT_PLAN) {
+    byDate.set(plan.date, {
+      date: formatDisplayDate(parseDateOnly(plan.date)),
+      sortKey: plan.date,
+      weight: null,
+      target: plan.target,
+      corridor: [plan.target - WEIGHT_CORRIDOR, plan.target + WEIGHT_CORRIDOR],
+    });
+  }
+
+  for (const w of weightEntries) {
+    const existing = byDate.get(w.week_start_date);
+    if (existing) {
+      existing.weight = w.weight;
+    } else {
+      byDate.set(w.week_start_date, {
+        date: formatDisplayDate(parseDateOnly(w.week_start_date)),
+        sortKey: w.week_start_date,
+        weight: w.weight,
+        target: null,
+        corridor: null,
+      });
+    }
+  }
+
+  const chartData = Array.from(byDate.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
   return (
     <div className="space-y-8 pb-16">
-      <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-        Formcheck & Gewichtsverlauf
-      </h1>
+      <div>
+        <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+          Formcheck &amp; Gewichtsverlauf
+        </h1>
+        <p className="text-xs text-zinc-500">
+          Lean-Bulk-Ziel: 88 kg → 91 kg bis 30. Apr 2027 · Zielkorridor ±{WEIGHT_CORRIDOR} kg
+        </p>
+      </div>
 
       <section className="space-y-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Gewichtsverlauf
-        </h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Gewichtsverlauf</h2>
         {chartData.length > 0 ? (
-          <div className="h-72 w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-2">
+          <div className="h-80 w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-gradient-to-b from-white to-zinc-50 dark:from-zinc-950 dark:to-zinc-900 p-3 shadow-sm">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="weightFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.35} />
+                    <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-800" />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} domain={[75, 120]} unit=" kg" />
-                <Tooltip />
-                <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
-              </LineChart>
+                <XAxis dataKey="date" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
+                <YAxis tick={{ fontSize: 12 }} domain={[85, 105]} unit=" kg" width={48} />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "none",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+                    fontSize: 12,
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Area
+                  dataKey="corridor"
+                  name="Zielkorridor"
+                  stroke="none"
+                  fill="#f59e0b"
+                  fillOpacity={0.12}
+                  connectNulls
+                />
+                <Line
+                  type="monotone"
+                  dataKey="target"
+                  name="Ziel-Ø"
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                  strokeDasharray="5 4"
+                  dot={false}
+                  connectNulls
+                />
+                <Area
+                  type="monotone"
+                  dataKey="weight"
+                  name="Dein Gewicht"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                  fill="url(#weightFill)"
+                  dot={{ r: 4, fill: "#10b981", strokeWidth: 0 }}
+                  activeDot={{ r: 6 }}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         ) : (
@@ -49,9 +136,7 @@ export function FormcheckView({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Formcheck-Verlauf
-        </h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Formcheck-Verlauf</h2>
         {formChecks.length === 0 && (
           <p className="text-sm text-zinc-500">Noch keine Formcheck-Bilder hochgeladen.</p>
         )}
@@ -64,7 +149,12 @@ export function FormcheckView({
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                 {fc.urls.map((url) => (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img key={url} src={url} alt="Formcheck" className="aspect-square w-full rounded-lg object-cover" />
+                  <img
+                    key={url}
+                    src={url}
+                    alt="Formcheck"
+                    className="aspect-square w-full rounded-xl object-cover shadow-sm"
+                  />
                 ))}
               </div>
             </div>

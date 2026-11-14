@@ -1,0 +1,30 @@
+/** Wöchentliches Ziel-Ø-Gewicht aus dem Lean-Bulk-Plan (9. Nov 2026 – 2. Mai 2027, 88 kg -> 91 kg). */
+export const LEAN_BULK_WEIGHT_PLAN: { date: string; target: number }[] = [
+  { date: "2026-11-15", target: 88.1 },
+  { date: "2026-11-22", target: 88.3 },
+  { date: "2026-11-29", target: 88.5 },
+  { date: "2026-12-06", target: 88.6 },
+  { date: "2026-12-13", target: 88.7 },
+  { date: "2026-12-20", target: 88.8 },
+  { date: "2026-12-27", target: 88.9 },
+  { date: "2027-01-03", target: 89.0 },
+  { date: "2027-01-10", target: 89.2 },
+  { date: "2027-01-17", target: 89.3 },
+  { date: "2027-01-24", target: 89.4 },
+  { date: "2027-01-31", target: 89.5 },
+  { date: "2027-02-07", target: 89.6 },
+  { date: "2027-02-14", target: 89.8 },
+  { date: "2027-02-21", target: 89.9 },
+  { date: "2027-02-28", target: 90.0 },
+  { date: "2027-03-07", target: 90.1 },
+  { date: "2027-03-14", target: 90.2 },
+  { date: "2027-03-21", target: 90.3 },
+  { date: "2027-03-28", target: 90.5 },
+  { date: "2027-04-04", target: 90.6 },
+  { date: "2027-04-11", target: 90.7 },
+  { date: "2027-04-18", target: 90.8 },
+  { date: "2027-04-25", target: 90.9 },
+  { date: "2027-05-02", target: 91.0 },
+];
+
+export const WEIGHT_CORRIDOR = 0.3;

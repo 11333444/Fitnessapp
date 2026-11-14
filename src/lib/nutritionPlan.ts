@@ -35,7 +35,7 @@ export const NUTRITION_PLAN = {
       baustein: "Protein",
       menge: "250 g Hähnchenbrust",
       austausch:
-        "250 g Hack 5 % · 250 g Kabeljau · 180 g Naturlachs · 200 g Seitan · 200 g Veggie-Hack · 1 Dose Thunfisch + 50 g Feta · 4 Eier + 150 g Eiklar",
+        "250 g Hack 5 % · 250 g Kabeljau · 180 g Naturlachs · 200 g Seitan · 200 g Veggie-Hack · 1 Dose Thunfisch + 50 g Feta · 7 Eier",
     },
     {
       baustein: "Gemüse",
@@ -54,7 +54,7 @@ export const NUTRITION_PLAN = {
       day: "Mo",
       activity: "Sauna",
       mittag: "Crispy Tonno Feta Rice Bowl",
-      abend: "Bolognese",
+      abend: "Spaghetti Bolognese",
       snack: true,
     },
     {
@@ -88,7 +88,7 @@ export const NUTRITION_PLAN = {
     {
       day: "Sa",
       activity: "Kraft C",
-      mittag: "Bolognese",
+      mittag: "Spaghetti Bolognese",
       abend: "Korean BBQ Chicken mit Reis",
       snack: true,
     },
@@ -109,8 +109,8 @@ export const NUTRITION_PLAN = {
       protein: 70,
     },
     {
-      name: "Bolognese",
-      zutaten: "175 g Nudeln, 250 g Hack 5 %, 200 g Tomatensauce, Karotte, Zwiebel, Knoblauch",
+      name: "Spaghetti Bolognese",
+      zutaten: "175 g Spaghetti, 250 g Hack 5 %, 200 g Tomatensauce, Karotte, Zwiebel, Knoblauch",
       kcal: 1040,
       protein: 75,
     },
@@ -130,7 +130,7 @@ export const NUTRITION_PLAN = {
     {
       name: "Rührei-Kartoffel-Pfanne",
       zutaten:
-        "4 Eier + 150 g Eiklar als Rührei, 750 g Kartoffeln (gekocht, angebraten), Tomaten, Blattgemüse, 30 g Feta, 1 TL Öl",
+        "7 Eier als Rührei, 750 g Kartoffeln (gekocht, angebraten), Tomaten, Blattgemüse, 30 g Feta, 1 TL Öl",
       kcal: 1060,
       protein: 62,
     },
@@ -196,8 +196,7 @@ export const NUTRITION_PLAN = {
         { key: "protein_seitan", label: "Seitan", amount: "200 g" },
         { key: "protein_fisch", label: "Kabeljau / Forelle / Naturlachs", amount: "250 g" },
         { key: "protein_thunfisch", label: "Thunfisch natur (Dose)", amount: "2 Dosen" },
-        { key: "protein_eier", label: "Eier", amount: "6er Packung" },
-        { key: "protein_eiklar", label: "Eiklar (Flasche)", amount: "150 g" },
+        { key: "protein_eier", label: "Eier", amount: "10er Packung" },
         { key: "protein_magerquark", label: "Magerquark", amount: "5 × 500 g" },
         { key: "protein_feta", label: "Feta", amount: "200 g" },
         { key: "protein_kaese", label: "Geriebener Käse", amount: "40 g" },

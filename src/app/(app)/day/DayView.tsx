@@ -24,6 +24,8 @@ const WORKOUT_TYPES: { value: string; label: string }[] = [
   { value: "tennis", label: "Tennis" },
 ];
 
+const MEAL_LABELS = ["Mittagessen", "Gym-Snack", "Abendessen"] as const;
+
 export function DayView({
   date,
   prevDate,
@@ -35,6 +37,7 @@ export function DayView({
   isSunday,
   weekSundayDate,
   weekly,
+  mealPhotos,
 }: {
   date: string;
   prevDate: string;
@@ -46,6 +49,7 @@ export function DayView({
   isSunday: boolean;
   weekSundayDate: string;
   weekly: { weight: number | null; formCheckUrls: string[] } | null;
+  mealPhotos: Record<string, { id: string; path: string; url: string }[]>;
 }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -173,6 +177,31 @@ export function DayView({
       { user_id: userData.user.id, week_start_date: date, weight: numeric },
       { onConflict: "user_id,week_start_date" },
     );
+    setBusy(false);
+    router.refresh();
+  }
+
+  async function handleMealPhotoUpload(mealLabel: string, file: File) {
+    setBusy(true);
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) return;
+
+    const path = `${userData.user.id}/${date}/${mealLabel}/${crypto.randomUUID()}-${file.name}`;
+    const { error: uploadError } = await supabase.storage.from("meal-photos").upload(path, file);
+
+    if (!uploadError) {
+      await supabase
+        .from("meal_photos")
+        .insert({ user_id: userData.user.id, date, meal_label: mealLabel, photo_path: path });
+    }
+    setBusy(false);
+    router.refresh();
+  }
+
+  async function deleteMealPhoto(id: string, path: string) {
+    setBusy(true);
+    await supabase.from("meal_photos").delete().eq("id", id);
+    await supabase.storage.from("meal-photos").remove([path]);
     setBusy(false);
     router.refresh();
   }
@@ -324,6 +353,51 @@ export function DayView({
               </button>
             );
           })}
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Essensbilder</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {MEAL_LABELS.map((label) => (
+            <div
+              key={label}
+              className="space-y-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{label}</h3>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) handleMealPhotoUpload(label, e.target.files[0]);
+                    e.target.value = "";
+                  }}
+                  className="w-28 text-xs"
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(mealPhotos[label] ?? []).map((photo) => (
+                  <div key={photo.id} className="group relative aspect-square">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={photo.url}
+                      alt={label}
+                      className="h-full w-full rounded-md object-cover"
+                    />
+                    <button
+                      onClick={() => deleteMealPhoto(photo.id, photo.path)}
+                      className="absolute right-0.5 top-0.5 hidden rounded-full bg-black/60 px-1.5 text-xs text-white group-hover:block"
+                      title="Löschen"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

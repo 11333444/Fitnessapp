@@ -17,20 +17,30 @@ export default async function DayPage({
 
   const supabase = await createClient();
 
-  const [{ data: habits }, { data: logs }, { data: dailyEntry }, { data: workouts }] = await Promise.all([
-    supabase
-      .from("habits")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("is_active", true)
-      .order("sort_order"),
-    supabase.from("habit_logs").select("*").eq("date", date),
-    supabase.from("daily_entries").select("*").eq("user_id", userId).eq("date", date).maybeSingle(),
-    supabase.from("workouts").select("*").eq("user_id", userId).eq("date", date),
-  ]);
+  const [{ data: habits }, { data: logs }, { data: dailyEntry }, { data: workouts }, { data: mealPhotoRows }] =
+    await Promise.all([
+      supabase
+        .from("habits")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("is_active", true)
+        .order("sort_order"),
+      supabase.from("habit_logs").select("*").eq("date", date),
+      supabase.from("daily_entries").select("*").eq("user_id", userId).eq("date", date).maybeSingle(),
+      supabase.from("workouts").select("*").eq("user_id", userId).eq("date", date),
+      supabase.from("meal_photos").select("*").eq("user_id", userId).eq("date", date),
+    ]);
 
   const habitIds = (habits ?? []).map((h) => h.id);
   const logsForUser = (logs ?? []).filter((l) => habitIds.includes(l.habit_id));
+
+  const mealPhotos: Record<string, { id: string; path: string; url: string }[]> = {};
+  for (const row of mealPhotoRows ?? []) {
+    const { data } = await supabase.storage.from("meal-photos").createSignedUrl(row.photo_path, 3600);
+    if (!data?.signedUrl) continue;
+    const label = row.meal_label ?? "Sonstiges";
+    (mealPhotos[label] ??= []).push({ id: row.id, path: row.photo_path, url: data.signedUrl });
+  }
 
   let weekly: { weight: number | null; formCheckUrls: string[] } | null = null;
   if (isSundayDate(date)) {
@@ -75,6 +85,7 @@ export default async function DayPage({
       isSunday={isSundayDate(date)}
       weekSundayDate={toDateOnly(weekSunday(current))}
       weekly={weekly}
+      mealPhotos={mealPhotos}
     />
   );
 }
