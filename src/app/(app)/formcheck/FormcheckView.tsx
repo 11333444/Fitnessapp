@@ -62,6 +62,17 @@ export function FormcheckView({
 
   const chartData = Array.from(byDate.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 
+  const allValues: number[] = [];
+  for (const p of chartData) {
+    if (p.weight != null) allValues.push(p.weight);
+    if (p.target != null) allValues.push(p.target);
+    if (p.corridor) allValues.push(p.corridor[0], p.corridor[1]);
+  }
+  const yDomain: [number, number] =
+    allValues.length > 0
+      ? [Math.floor(Math.min(...allValues) - 1), Math.ceil(Math.max(...allValues) + 1)]
+      : [85, 105];
+
   return (
     <div className="space-y-8 pb-16">
       <div>
@@ -87,7 +98,7 @@ export function FormcheckView({
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-zinc-200 dark:stroke-zinc-800" />
                 <XAxis dataKey="date" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
-                <YAxis tick={{ fontSize: 12 }} domain={[85, 105]} unit=" kg" width={48} />
+                <YAxis tick={{ fontSize: 12 }} domain={yDomain} allowDataOverflow unit=" kg" width={48} />
                 <Tooltip
                   contentStyle={{
                     borderRadius: 12,
