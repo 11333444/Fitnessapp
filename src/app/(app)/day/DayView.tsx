@@ -59,6 +59,8 @@ export function DayView({
   const [note, setNote] = useState(dailyEntry?.note ?? "");
   const [noLimitJournal, setNoLimitJournal] = useState(dailyEntry?.no_limit_journal ?? "");
   const [gratitudeJournal, setGratitudeJournal] = useState(dailyEntry?.gratitude_journal ?? "");
+  const [thoughtJournal, setThoughtJournal] = useState(dailyEntry?.thought_journal ?? "");
+  const [tomorrowIntention, setTomorrowIntention] = useState(dailyEntry?.tomorrow_intention ?? "");
   const [weight, setWeight] = useState(weekly?.weight?.toString() ?? "");
   const [busy, setBusy] = useState(false);
 
@@ -125,7 +127,7 @@ export function DayView({
   }
 
   async function saveJournalField(
-    field: "note" | "no_limit_journal" | "gratitude_journal",
+    field: "note" | "no_limit_journal" | "gratitude_journal" | "thought_journal" | "tomorrow_intention",
     value: string,
   ) {
     setBusy(true);
@@ -136,6 +138,8 @@ export function DayView({
     if (field === "note") patch.note = value;
     if (field === "no_limit_journal") patch.no_limit_journal = value;
     if (field === "gratitude_journal") patch.gratitude_journal = value;
+    if (field === "thought_journal") patch.thought_journal = value;
+    if (field === "tomorrow_intention") patch.tomorrow_intention = value;
 
     await supabase.from("daily_entries").upsert(patch, { onConflict: "user_id,date" });
 
@@ -416,6 +420,21 @@ export function DayView({
           onChange={setGratitudeJournal}
           onSave={() => saveJournalField("gratitude_journal", gratitudeJournal)}
         />
+        <JournalField
+          label="Gedankenjournal"
+          hint="3 unbewusste Gedanken, die dir heute aufgefallen sind + 3 bewusste Gedanken, die du bewusst gedacht hast."
+          value={thoughtJournal}
+          onChange={setThoughtJournal}
+          onSave={() => saveJournalField("thought_journal", thoughtJournal)}
+          rows={4}
+        />
+        <JournalField
+          label="Morgen bewusst denken"
+          hint="Welchen einzigen Gedanken will ich morgen bewusst denken? Welche Handlungen laufen derzeit unbewusst ab, ohne dass du sie entscheidest?"
+          value={tomorrowIntention}
+          onChange={setTomorrowIntention}
+          onSave={() => saveJournalField("tomorrow_intention", tomorrowIntention)}
+        />
       </section>
 
       {isSunday && (
@@ -516,23 +535,28 @@ function TimeLogInput({
 
 function JournalField({
   label,
+  hint,
   value,
   onChange,
   onSave,
+  rows = 2,
 }: {
   label: string;
+  hint?: string;
   value: string;
   onChange: (value: string) => void;
   onSave: () => void;
+  rows?: number;
 }) {
   return (
     <div className="space-y-1">
       <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{label}</label>
+      {hint && <p className="text-xs text-zinc-500">{hint}</p>}
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onSave}
-        rows={2}
+        rows={rows}
         className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-50"
       />
     </div>

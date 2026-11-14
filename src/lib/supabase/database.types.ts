@@ -20,6 +20,8 @@ export type Database = {
           id: string
           no_limit_journal: string | null
           note: string | null
+          thought_journal: string | null
+          tomorrow_intention: string | null
           updated_at: string
           user_id: string
         }
@@ -30,6 +32,8 @@ export type Database = {
           id?: string
           no_limit_journal?: string | null
           note?: string | null
+          thought_journal?: string | null
+          tomorrow_intention?: string | null
           updated_at?: string
           user_id: string
         }
@@ -40,6 +44,8 @@ export type Database = {
           id?: string
           no_limit_journal?: string | null
           note?: string | null
+          thought_journal?: string | null
+          tomorrow_intention?: string | null
           updated_at?: string
           user_id?: string
         }
