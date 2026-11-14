@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/week", label: "Woche" },
   { href: "/formcheck", label: "Formcheck" },
   { href: "/training", label: "Training" },
+  { href: "/nutrition", label: "Ernährung" },
   { href: "/habits", label: "Habits" },
 ];
 

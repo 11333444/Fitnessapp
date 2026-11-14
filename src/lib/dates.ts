@@ -42,6 +42,11 @@ export function weekDays(date: Date): Date[] {
   return eachDayOfInterval({ start: monday, end: addDays(monday, 6) });
 }
 
+/** Einkaufswoche (Sa-Fr): der Samstag, an dem/nach dem zuletzt eingekauft wurde. */
+export function shoppingWeekStart(date: Date): Date {
+  return startOfWeek(date, { weekStartsOn: 6 });
+}
+
 export function monthDays(date: Date): Date[] {
   return eachDayOfInterval({ start: startOfMonth(date), end: endOfMonth(date) });
 }

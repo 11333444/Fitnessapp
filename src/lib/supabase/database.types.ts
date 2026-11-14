@@ -376,6 +376,36 @@ export type Database = {
         }
         Relationships: []
       }
+      shopping_list_logs: {
+        Row: {
+          checked: boolean
+          created_at: string
+          id: string
+          item_key: string
+          updated_at: string
+          user_id: string
+          week_start_date: string
+        }
+        Insert: {
+          checked?: boolean
+          created_at?: string
+          id?: string
+          item_key: string
+          updated_at?: string
+          user_id: string
+          week_start_date: string
+        }
+        Update: {
+          checked?: boolean
+          created_at?: string
+          id?: string
+          item_key?: string
+          updated_at?: string
+          user_id?: string
+          week_start_date?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
