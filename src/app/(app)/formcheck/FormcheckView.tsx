@@ -4,6 +4,7 @@ import {
   ComposedChart,
   Line,
   Area,
+  LabelList,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -12,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { Tables } from "@/lib/supabase/database.types";
-import { formatDisplayDate, parseDateOnly } from "@/lib/dates";
+import { formatDisplayDate, formatShortDate, parseDateOnly } from "@/lib/dates";
 import { LEAN_BULK_WEIGHT_PLAN, WEIGHT_CORRIDOR } from "@/lib/leanBulkWeightPlan";
 
 type WeightEntry = Tables<"weight_entries">;
@@ -20,6 +21,7 @@ type FormCheck = Tables<"form_checks"> & { urls: string[] };
 
 type ChartPoint = {
   date: string;
+  shortDate: string | null;
   sortKey: string;
   weight: number | null;
   target: number | null;
@@ -38,6 +40,7 @@ export function FormcheckView({
   for (const plan of LEAN_BULK_WEIGHT_PLAN) {
     byDate.set(plan.date, {
       date: formatDisplayDate(parseDateOnly(plan.date)),
+      shortDate: null,
       sortKey: plan.date,
       weight: null,
       target: plan.target,
@@ -46,12 +49,15 @@ export function FormcheckView({
   }
 
   for (const w of weightEntries) {
+    const shortDate = formatShortDate(parseDateOnly(w.week_start_date));
     const existing = byDate.get(w.week_start_date);
     if (existing) {
       existing.weight = w.weight;
+      existing.shortDate = shortDate;
     } else {
       byDate.set(w.week_start_date, {
         date: formatDisplayDate(parseDateOnly(w.week_start_date)),
+        shortDate,
         sortKey: w.week_start_date,
         weight: w.weight,
         target: null,
@@ -135,7 +141,15 @@ export function FormcheckView({
                   fill="url(#weightFill)"
                   dot={{ r: 4, fill: "#10b981", strokeWidth: 0 }}
                   activeDot={{ r: 6 }}
-                />
+                >
+                  <LabelList
+                    dataKey="shortDate"
+                    position="top"
+                    offset={10}
+                    fontSize={9}
+                    fill="#a1a1aa"
+                  />
+                </Area>
               </ComposedChart>
             </ResponsiveContainer>
           </div>

@@ -60,3 +60,7 @@ export function weekdayLabelDE(isoDay: number): string {
 export function formatDisplayDate(date: Date): string {
   return format(date, "dd.MM.yyyy");
 }
+
+export function formatShortDate(date: Date): string {
+  return format(date, "dd.MM.");
+}
