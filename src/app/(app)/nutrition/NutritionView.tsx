@@ -64,7 +64,7 @@ export function NutritionView({
           {NUTRITION_PLAN.dailyStructure.map((s) => (
             <div
               key={s.key}
-              className="space-y-1 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+              className="space-y-1 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3"
             >
               <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">{s.label}</div>
               <div className="text-xs font-medium text-emerald-600 dark:text-emerald-400">{s.time}</div>
@@ -77,10 +77,10 @@ export function NutritionView({
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Portionsregel</h2>
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-2xl border border-zinc-800/80">
           <table className="w-full min-w-[500px] border-collapse text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-900/60">
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Baustein</th>
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">
                   Menge pro Mahlzeit
@@ -92,7 +92,7 @@ export function NutritionView({
             </thead>
             <tbody>
               {NUTRITION_PLAN.portionRules.map((r) => (
-                <tr key={r.baustein} className="border-b border-zinc-100 dark:border-zinc-900">
+                <tr key={r.baustein} className="border-b border-zinc-800/60">
                   <td className="px-2 py-1.5 font-medium text-zinc-900 dark:text-zinc-50">{r.baustein}</td>
                   <td className="px-2 py-1.5 text-zinc-700 dark:text-zinc-300">{r.menge}</td>
                   <td className="px-2 py-1.5 text-zinc-500">{r.austausch}</td>
@@ -105,10 +105,10 @@ export function NutritionView({
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Wochenplan</h2>
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-2xl border border-zinc-800/80">
           <table className="w-full min-w-[600px] border-collapse text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-900/60">
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Tag</th>
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Aktivität</th>
                 <th className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">Mittagessen</th>
@@ -118,7 +118,7 @@ export function NutritionView({
             </thead>
             <tbody>
               {NUTRITION_PLAN.weekPlan.map((d) => (
-                <tr key={d.day} className="border-b border-zinc-100 dark:border-zinc-900">
+                <tr key={d.day} className="border-b border-zinc-800/60">
                   <td className="px-2 py-1.5 font-medium text-zinc-900 dark:text-zinc-50">{d.day}</td>
                   <td className="px-2 py-1.5 text-zinc-500">{d.activity}</td>
                   <td className="px-2 py-1.5 text-zinc-700 dark:text-zinc-300">{d.mittag}</td>
@@ -143,7 +143,7 @@ export function NutritionView({
           {NUTRITION_PLAN.recipes.map((r) => (
             <div
               key={r.name}
-              className="space-y-1 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+              className="space-y-1 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{r.name}</div>
@@ -177,7 +177,7 @@ export function NutritionView({
           {NUTRITION_PLAN.shoppingList.map((cat) => (
             <div
               key={cat.category}
-              className="space-y-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+              className="space-y-1.5 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3"
             >
               <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">{cat.category}</h3>
               {cat.items.map((item) => {
@@ -219,7 +219,7 @@ export function NutritionView({
 
 function MacroCard({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3 text-center">
+    <div className="rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3 text-center">
       <div className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
         {value}
         <span className="ml-1 text-xs font-normal text-zinc-500">{unit}</span>

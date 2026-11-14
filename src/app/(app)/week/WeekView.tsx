@@ -109,11 +109,11 @@ export function WeekView({
         <ProgressBar label="Monatsfortschritt" {...monthProgress} />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <div className="overflow-x-auto rounded-2xl border border-zinc-800/80">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
-              <th className="sticky left-0 bg-zinc-50 dark:bg-zinc-900 px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">
+            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-900/60">
+              <th className="sticky left-0 bg-zinc-900 px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">
                 Habit
               </th>
               {weekDateObjs.map((d) => (
@@ -148,8 +148,8 @@ export function WeekView({
                 : null;
 
               return (
-                <tr key={habit.id} className="border-b border-zinc-100 dark:border-zinc-900">
-                  <td className="sticky left-0 bg-white dark:bg-zinc-950 px-3 py-2 font-medium text-zinc-900 dark:text-zinc-50">
+                <tr key={habit.id} className="border-b border-zinc-800/60">
+                  <td className="sticky left-0 bg-zinc-950 px-3 py-2 font-medium text-zinc-50">
                     {habit.name}
                   </td>
                   {weekDates.map((dateStr, i) => {
@@ -194,10 +194,10 @@ export function WeekView({
 
       <section className="space-y-2">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Training</h2>
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-2xl border border-zinc-800/80">
           <table className="w-full min-w-[600px] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-900/60">
                 <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">Typ</th>
                 {weekDateObjs.map((d) => (
                   <th key={d.toISOString()} className="px-2 py-2 text-center font-medium text-zinc-600 dark:text-zinc-400">
@@ -208,7 +208,7 @@ export function WeekView({
             </thead>
             <tbody>
               {WORKOUT_TYPES.map((wt) => (
-                <tr key={wt.value} className="border-b border-zinc-100 dark:border-zinc-900">
+                <tr key={wt.value} className="border-b border-zinc-800/60">
                   <td className="px-3 py-2 font-medium text-zinc-900 dark:text-zinc-50">{wt.label}</td>
                   {weekDates.map((dateStr) => {
                     const active = workouts.some((w) => w.type === wt.value && w.date === dateStr);
@@ -217,8 +217,10 @@ export function WeekView({
                         <button
                           onClick={() => toggleWorkout(dateStr, wt.value)}
                           disabled={busy}
-                          className={`h-5 w-5 rounded-full ${
-                            active ? "bg-zinc-900 dark:bg-zinc-50" : "border border-zinc-300 dark:border-zinc-700"
+                          className={`h-5 w-5 rounded-full transition-colors ${
+                            active
+                              ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]"
+                              : "border border-zinc-700 hover:border-emerald-500/60"
                           }`}
                         />
                       </td>

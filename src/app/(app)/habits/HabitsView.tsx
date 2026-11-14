@@ -63,17 +63,17 @@ export function HabitsView({ habits, userId }: { habits: Habit[]; userId: string
 
       <form
         action={(fd) => addHabit(fd)}
-        className="grid grid-cols-2 gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 sm:grid-cols-5"
+        className="grid grid-cols-2 gap-2 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4 sm:grid-cols-5"
       >
-        <input name="name" placeholder="Name" required className="col-span-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm sm:col-span-2" />
-        <select name="type" className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm">
+        <input name="name" placeholder="Name" required className="col-span-2 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm sm:col-span-2" />
+        <select name="type" className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm">
           <option value="boolean">Ja/Nein</option>
           <option value="numeric">Zielwert</option>
         </select>
-        <input name="target_value" placeholder="Ziel (Zahl)" className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm" />
-        <input name="unit" placeholder="Einheit" className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm" />
-        <input name="category" placeholder="Kategorie (optional)" className="col-span-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm sm:col-span-4" />
-        <button type="submit" className="rounded-md bg-zinc-900 dark:bg-zinc-50 px-3 py-1.5 text-sm font-medium text-white dark:text-zinc-900">
+        <input name="target_value" placeholder="Ziel (Zahl)" className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm" />
+        <input name="unit" placeholder="Einheit" className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm" />
+        <input name="category" placeholder="Kategorie (optional)" className="col-span-2 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm sm:col-span-4" />
+        <button type="submit" className="rounded-lg bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400">
           Hinzufügen
         </button>
       </form>
@@ -87,7 +87,7 @@ export function HabitsView({ habits, userId }: { habits: Habit[]; userId: string
         {visibleHabits.map((habit) => (
           <div
             key={habit.id}
-            className={`space-y-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3 ${
+            className={`space-y-2 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3 ${
               !habit.is_active ? "opacity-50" : ""
             }`}
           >

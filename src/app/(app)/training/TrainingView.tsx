@@ -165,7 +165,7 @@ export function TrainingView({
     <div className="space-y-8 pb-16">
       <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Trainingsplan</h1>
 
-      <section className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4">
+      <section className="rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4">
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">
           Wochenplan
         </h2>
@@ -187,7 +187,7 @@ export function TrainingView({
           {SWIM_PLAN.units.map((unit) => (
             <div
               key={unit.key}
-              className="space-y-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4"
+              className="space-y-2 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4"
             >
               <div>
                 <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">{unit.label}</div>
@@ -204,10 +204,10 @@ export function TrainingView({
           ))}
         </div>
 
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-2xl border border-zinc-800/80">
           <table className="w-full min-w-[500px] border-collapse text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-900/60">
                 {SWIM_PLAN.stufenTable.headers.map((h, i) => (
                   <th key={i} className="px-2 py-1.5 text-left font-medium text-zinc-600 dark:text-zinc-400">
                     {h}
@@ -217,7 +217,7 @@ export function TrainingView({
             </thead>
             <tbody>
               {SWIM_PLAN.stufenTable.rows.map((row, i) => (
-                <tr key={i} className="border-b border-zinc-100 dark:border-zinc-900">
+                <tr key={i} className="border-b border-zinc-800/60">
                   {row.map((cell, j) => (
                     <td
                       key={j}
@@ -234,7 +234,7 @@ export function TrainingView({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 text-xs">
+          <div className="space-y-1 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4 text-xs">
             <h3 className="mb-1 text-sm font-semibold text-zinc-900 dark:text-zinc-50">Atemrhythmen</h3>
             {SWIM_PLAN.atemrhythmen.map((a) => (
               <p key={a.key} className="text-zinc-600 dark:text-zinc-400">
@@ -242,7 +242,7 @@ export function TrainingView({
               </p>
             ))}
           </div>
-          <div className="space-y-1 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 text-xs">
+          <div className="space-y-1 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4 text-xs">
             <h3 className="mb-1 text-sm font-semibold text-zinc-900 dark:text-zinc-50">Technik-Check</h3>
             <ul className="list-disc space-y-0.5 pl-4 text-zinc-600 dark:text-zinc-400">
               {SWIM_PLAN.technikCheck.map((t, i) => (
@@ -254,7 +254,7 @@ export function TrainingView({
 
         <p className="text-xs text-zinc-500">{SWIM_PLAN.protocolNote}</p>
 
-        <div className="space-y-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4">
+        <div className="space-y-3 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4">
           <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
             Wochenprotokoll – {weekdayLabelDE(isoDay)}, {formatDisplayDate(dateObj)}
           </h3>
@@ -319,7 +319,7 @@ export function TrainingView({
               onClick={() => saveVariant(v.value)}
               className={`rounded-md px-3 py-1.5 text-xs font-medium disabled:opacity-50 ${
                 activeVariant.value === v.value
-                  ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                  ? "bg-emerald-500 text-zinc-950 shadow-sm shadow-emerald-500/30"
                   : "border border-zinc-300 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400"
               }`}
             >
@@ -330,18 +330,18 @@ export function TrainingView({
 
         <form
           action={(fd) => addExercise(fd)}
-          className="flex gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+          className="flex gap-2 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3"
         >
           <input
             name="name"
             placeholder="Neue Übung (z.B. Kniebeuge)"
             required
-            className="flex-1 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm"
+            className="flex-1 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm"
           />
           <button
             type="submit"
             disabled={busy}
-            className="rounded-md bg-zinc-900 dark:bg-zinc-50 px-3 py-1.5 text-sm font-medium text-white dark:text-zinc-900 disabled:opacity-50"
+            className="rounded-lg bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400 disabled:opacity-50"
           >
             Hinzufügen
           </button>
@@ -364,7 +364,7 @@ export function TrainingView({
             return (
               <div
                 key={exercise.id}
-                className="space-y-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+                className="space-y-3 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex flex-1 items-center gap-2">
@@ -467,7 +467,7 @@ function ExerciseLogInputs({
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             onBlur={() => onSave(weight, reps, sets)}
-            className="w-20 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
+            className="w-20 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1"
           />
         </>
       )}
@@ -477,7 +477,7 @@ function ExerciseLogInputs({
         value={reps}
         onChange={(e) => setReps(e.target.value)}
         onBlur={() => onSave(weight, reps, sets)}
-        className="w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
+        className="w-16 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1"
       />
       <label className="text-zinc-500">Sätze</label>
       <input
@@ -485,7 +485,7 @@ function ExerciseLogInputs({
         value={sets}
         onChange={(e) => setSets(e.target.value)}
         onBlur={() => onSave(weight, reps, sets)}
-        className="w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1"
+        className="w-16 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1"
       />
     </div>
   );
@@ -506,7 +506,7 @@ function ExerciseTooltip({
   const data = payload[0].payload;
 
   return (
-    <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-2 py-1.5 text-xs shadow-sm">
+    <div className="rounded-xl border border-zinc-800/80 bg-zinc-900 shadow-sm shadow-black/20 px-2 py-1.5 text-xs shadow-sm">
       <div className="font-medium text-zinc-900 dark:text-zinc-50">{label}</div>
       {!isBodyweight && data.weight != null && (
         <div className="text-emerald-600 dark:text-emerald-400">Gewicht: {data.weight} kg</div>
@@ -545,7 +545,7 @@ function SwimLogInputs({
             setStufe(e.target.value);
             onSave(e.target.value, gefuehl, notiz);
           }}
-          className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-1.5 py-1"
+          className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-1.5 py-1"
         >
           <option value="">–</option>
           {[1, 2, 3, 4, 5].map((s) => (
@@ -562,7 +562,7 @@ function SwimLogInputs({
           value={gefuehl}
           onChange={(e) => setGefuehl(e.target.value)}
           onBlur={() => onSave(stufe, gefuehl, notiz)}
-          className="w-12 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-1.5 py-1"
+          className="w-12 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-1.5 py-1"
         />
       </div>
       <input
@@ -570,7 +570,7 @@ function SwimLogInputs({
         value={notiz}
         onChange={(e) => setNotiz(e.target.value)}
         onBlur={() => onSave(stufe, gefuehl, notiz)}
-        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-1.5 py-1 text-xs"
+        className="w-full rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-1.5 py-1 text-xs"
       />
     </div>
   );

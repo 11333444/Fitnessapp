@@ -285,7 +285,7 @@ export function DayView({
                 return (
                   <div
                     key={habit.id}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3 py-2.5"
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 px-3 py-2.5"
                   >
                     <label className="flex flex-1 items-center gap-3">
                       <input
@@ -349,7 +349,7 @@ export function DayView({
                 disabled={busy}
                 className={`rounded-full px-3 py-1.5 text-sm font-medium ${
                   active
-                    ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                    ? "bg-emerald-500 text-zinc-950 shadow-sm shadow-emerald-500/30"
                     : "border border-zinc-300 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400"
                 }`}
               >
@@ -366,7 +366,7 @@ export function DayView({
           {MEAL_LABELS.map((label) => (
             <div
               key={label}
-              className="space-y-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-3"
+              className="space-y-2 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-3"
             >
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{label}</h3>
@@ -451,7 +451,7 @@ export function DayView({
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               onBlur={saveWeight}
-              className="w-24 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1 text-sm"
+              className="w-24 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1 text-sm"
             />
           </div>
 
@@ -504,7 +504,7 @@ function NumericLogInput({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={() => onSave(value)}
-        className="w-16 rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1 text-sm"
+        className="w-16 rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1 text-sm"
       />
       {unit && <span className="text-xs text-zinc-500">{unit}</span>}
     </div>
@@ -528,7 +528,7 @@ function TimeLogInput({
         setValue(e.target.value);
         onSave(e.target.value);
       }}
-      className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1 text-sm"
+      className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1 text-sm"
     />
   );
 }
@@ -557,7 +557,7 @@ function JournalField({
         onChange={(e) => onChange(e.target.value)}
         onBlur={onSave}
         rows={rows}
-        className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-50"
+        className="w-full rounded-lg border border-zinc-700/70 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-50 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40"
       />
     </div>
   );

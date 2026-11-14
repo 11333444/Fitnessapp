@@ -67,7 +67,7 @@ export function AdminView({ profiles }: { profiles: Profile[] }) {
 
       <form
         onSubmit={handleCreateUser}
-        className="space-y-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4"
+        className="space-y-3 rounded-2xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-sm shadow-black/20 p-4"
       >
         <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Neuen User anlegen</h2>
         <div className="grid gap-2 sm:grid-cols-3">
@@ -77,26 +77,26 @@ export function AdminView({ profiles }: { profiles: Profile[] }) {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm"
+            className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm"
           />
           <input
             placeholder="Anzeigename (optional)"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm"
+            className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm"
           />
           <input
             placeholder="Default-Passwort"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-zinc-300 dark:border-zinc-700 bg-transparent px-2 py-1.5 text-sm"
+            className="rounded-lg border border-zinc-700/70 bg-zinc-900/60 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/40 px-2 py-1.5 text-sm"
           />
         </div>
         <button
           type="submit"
           disabled={busy}
-          className="rounded-md bg-zinc-900 dark:bg-zinc-50 px-3 py-1.5 text-sm font-medium text-white dark:text-zinc-900 disabled:opacity-50"
+          className="rounded-lg bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400 disabled:opacity-50"
         >
           Anlegen
         </button>
@@ -107,10 +107,10 @@ export function AdminView({ profiles }: { profiles: Profile[] }) {
         )}
       </form>
 
-      <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <div className="overflow-x-auto rounded-2xl border border-zinc-800/80">
         <table className="w-full min-w-[600px] border-collapse text-sm">
           <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900">
+            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-900/60">
               <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">E-Mail</th>
               <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">Name</th>
               <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">Rolle</th>
@@ -120,7 +120,7 @@ export function AdminView({ profiles }: { profiles: Profile[] }) {
           </thead>
           <tbody>
             {profiles.map((p) => (
-              <tr key={p.id} className="border-b border-zinc-100 dark:border-zinc-900">
+              <tr key={p.id} className="border-b border-zinc-800/60">
                 <td className="px-3 py-2 text-zinc-900 dark:text-zinc-50">{p.email}</td>
                 <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">{p.display_name}</td>
                 <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">{p.role}</td>
