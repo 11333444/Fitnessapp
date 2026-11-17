@@ -373,7 +373,6 @@ export function DayView({
                 <input
                   type="file"
                   accept="image/*"
-                  capture="environment"
                   onChange={(e) => {
                     if (e.target.files?.[0]) handleMealPhotoUpload(label, e.target.files[0]);
                     e.target.value = "";
